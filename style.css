@@ -1,0 +1,145 @@
+/* BLUE COLOR のロゴに合わせた色（水色・黒のふち・白）と、丸ゴシックの太字 */
+:root {
+  --blue: #03A0DC;       /* ロゴの水色 */
+  --blue-dark: #0279A8;
+  --blue-light: #E4F6FD;
+  --ink: #101828;        /* ロゴの黒いふち */
+  --navy: #1B2A4A;
+  --yellow: #FFD23F;
+  --red: #D93B3B;
+  --red-light: #FDECEC;
+  --white: #FFFFFF;
+  --muted: #5B6476;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--blue-light) 0%, #F6FBFE 45%, var(--white) 100%);
+  color: var(--ink);
+  font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px calc(28px + env(safe-area-inset-bottom));
+}
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* 上部：ロゴと案内 */
+.hero { text-align: center; padding: 8px 4px 18px; }
+.logo { display: block; width: 78%; max-width: 340px; height: auto; margin: 0 auto 14px; }
+.lead { margin: 0; font-size: 26px; font-weight: 900; color: var(--navy); letter-spacing: .02em; }
+.mark { background: linear-gradient(transparent 58%, var(--yellow) 58%); padding: 0 2px; }
+.sub { margin: 6px 0 0; font-size: 15px; color: var(--muted); }
+
+/* 番号の入力 */
+.search {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 0 var(--ink);
+  padding: 18px 16px 20px;
+}
+.label { display: block; font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+.row {
+  display: flex; align-items: center;
+  border: 3px solid var(--blue);
+  border-radius: 14px;
+  background: var(--white);
+  padding: 0 12px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.row:focus-within { border-color: var(--blue-dark); box-shadow: 0 0 0 4px rgba(3, 160, 220, .25); }
+.row.bad { border-color: var(--red); box-shadow: 0 0 0 4px rgba(217, 59, 59, .18); }
+.no { font-size: 22px; font-weight: 900; color: var(--blue-dark); margin-right: 6px; }
+#jobNo {
+  flex: 1; min-width: 0;
+  border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: 34px; font-weight: 900; letter-spacing: .06em;
+  color: var(--ink);
+  padding: 10px 0;
+}
+#jobNo::placeholder { color: #B6C2D2; font-weight: 800; letter-spacing: 0; font-size: 26px; }
+.help { margin: 8px 2px 0; font-size: 14px; color: var(--muted); }
+.error {
+  margin: 10px 0 0; padding: 10px 12px;
+  background: var(--red-light); color: var(--red);
+  border-radius: 10px; font-size: 15px; font-weight: 800;
+}
+.opening { margin: 12px 0 0; text-align: center; font-size: 15px; font-weight: 800; color: var(--blue-dark); }
+.opening a { color: var(--blue-dark); }
+
+/* ボタン */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; min-height: 60px;
+  border: 3px solid var(--ink); border-radius: 999px;
+  font: inherit; font-size: 22px; font-weight: 900; text-decoration: none;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform .08s, box-shadow .08s;
+}
+.btn-main {
+  margin-top: 16px;
+  background: var(--blue); color: var(--white);
+  box-shadow: 0 5px 0 var(--ink);
+  text-shadow: 0 2px 0 rgba(16, 24, 40, .35);
+}
+.btn-main:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.btn-sub {
+  margin-top: 26px;
+  background: var(--white); color: var(--navy);
+  box-shadow: 0 5px 0 var(--ink); font-size: 19px;
+}
+.btn-sub::after { content: "›"; font-size: 26px; line-height: 1; margin-left: 2px; }
+.btn-sub:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.ico { width: 26px; height: 26px; }
+
+/* 最近の動画の求人 */
+.recent { margin-top: 30px; }
+.h2 {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 12px; font-size: 20px; font-weight: 900; color: var(--navy);
+}
+.h2::before { content: ""; width: 8px; height: 24px; border-radius: 4px; background: var(--blue); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.list .empty { padding: 16px; text-align: center; color: var(--muted); background: var(--white); border-radius: 14px; border: 2px dashed #C9D6E6; }
+.job {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 14px;
+  background: var(--white);
+  border: 2px solid var(--ink); border-radius: 14px;
+  box-shadow: 0 3px 0 var(--ink);
+  color: var(--ink); text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.job:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.job-no {
+  flex: none; min-width: 70px; text-align: center;
+  padding: 6px 8px; border-radius: 10px;
+  background: var(--blue); color: var(--white);
+  font-size: 18px; font-weight: 900; line-height: 1.2;
+}
+.job-no small { display: block; font-size: 11px; font-weight: 800; opacity: .9; }
+.job-body { flex: 1; min-width: 0; }
+.job-company { font-size: 17px; font-weight: 900; line-height: 1.35; word-break: break-all; }
+.job-title { font-size: 14px; font-weight: 800; color: var(--blue-dark); line-height: 1.4; }
+.job-area { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.job-go { flex: none; font-size: 26px; color: var(--blue-dark); font-weight: 900; }
+
+.foot { margin-top: 26px; text-align: center; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 350px) {
+  .lead { font-size: 22px; }
+  #jobNo { font-size: 28px; }
+  .btn { font-size: 20px; }
+}
