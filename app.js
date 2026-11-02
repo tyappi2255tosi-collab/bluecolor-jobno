@@ -2,8 +2,11 @@
  * BLUE COLOR の求人には2種類ある：
  *   九州・沖縄の求人 … https://www.bluecolor-kyuujin.com/job/detail/id=番号
  *   県外ワークの求人 … https://www.bluecolor-kyuujin.com/othersjob/detail/id=番号
+ * 番号は2つでかぶらないので、見る人には九州・沖縄か県外かの区別を見せない。
  * 番号を入れたとき、jobs.json にその番号があれば、書いてある種類（"type"）のページを開く。
- * jobs.json に無い番号のときは、「九州・沖縄の求人」「県外ワークの求人」の2つのボタンを出して、見る人に選んでもらう。
+ * jobs.json に無い番号のときは、動画ツールのサイト（bluecolor-shorts）の「求人番号の確認の入り口」に、
+ * どちらにあるかを確かめてもらい、ある方を開く。どちらにも無ければ「見つかりませんでした」と公式HPへのボタンを出す。
+ * 確かめられないとき（通信の失敗・回数の上限など）だけ、「九州・沖縄の求人」「県外ワークの求人」の2つのボタンを出す。
  * jobs.json の "type" は "kyushu"（九州・沖縄）か "others"（県外ワーク）。書いていない行は九州・沖縄として扱う。
  * 古いスマホのブラウザ・TikTok のアプリ内のブラウザでも動くよう、新しすぎる書き方は使わない。
  */
@@ -16,6 +19,10 @@
   };
   var LABELS = { kyushu: "九州・沖縄の求人", others: "県外ワークの求人" };
   var MAX_DIGITS = 7;
+  // 求人番号の確認の入り口（netlify-app/netlify/functions/jobno.mts）。番号のほかには何も送らない
+  var LOOKUP_URL = "https://bluecolor-shorts.netlify.app/jobno-api/lookup?no=";
+  var LOOKUP_MS = 15000;
+  var HOME_URL = "https://www.bluecolor-kyuujin.com/";
 
   var form = document.getElementById("searchForm");
   var input = document.getElementById("jobNo");
@@ -90,25 +97,85 @@
   var jobsById = {};        // 番号 → 求人（type を見て開くページを決める）
   var waiting = null;       // 読み込みが終わる前に「探す」が押されたときの番号
 
-  /** 番号の求人を開く（jobs.json にあれば記録どおり、無ければ2つのボタンを出す） */
+  /** 求人ページを開く */
+  function openJob(type, id) {
+    var url = urlOf(type, id);
+    choice.hidden = true;
+    // 開かなかったときのために、リンクも出しておく
+    opening.innerHTML = "";
+    opening.appendChild(document.createTextNode("求人番号 " + id + " のページを開いています… "));
+    var a = el("a", null, "開かないときはこちら");
+    a.href = url;
+    opening.appendChild(a);
+    opening.hidden = false;
+    // 同じ画面で開く（TikTok のアプリ内のブラウザでは、新しいタブは開けないことがあるため）
+    window.location.href = url;
+  }
+
+  var lookupSeq = 0;   // 入れなおしたときに、前の確かめの返事を使わないため
+
+  /** 番号の求人を開く（jobs.json にあれば記録どおり。無ければ、どちらにあるかを確かめてから開く） */
   function go(id) {
     var j = jobsById[id];
     choice.hidden = true;
     opening.hidden = true;
-    if (j) {
-      var url = urlOf(j.type, id);
-      // 開かなかったときのために、リンクも出しておく
-      opening.innerHTML = "";
-      opening.appendChild(document.createTextNode(LABELS[typeOf(j.type)] + " " + id + " のページを開いています… "));
-      var a = el("a", null, "開かないときはこちら");
-      a.href = url;
-      opening.appendChild(a);
-      opening.hidden = false;
-      // 同じ画面で開く（TikTok のアプリ内のブラウザでは、新しいタブは開けないことがあるため）
-      window.location.href = url;
-      return;
+    if (j) { openJob(j.type, id); return; }
+    var seq = ++lookupSeq;
+    opening.textContent = "求人番号 " + id + " をさがしています…";
+    opening.hidden = false;
+    lookup(id, function (res) {
+      if (seq !== lookupSeq) return;
+      if (res && (res.type === "kyushu" || res.type === "others")) { openJob(res.type, id); return; }
+      opening.hidden = true;
+      if (res && res.type === null) showNotFound(id);
+      else showChoice(id);   // 確かめられなかった
+    });
+  }
+
+  /** どちらにあるかを確かめる。返事：{ type: "kyushu" | "others" | null }、確かめられないときは null */
+  function lookup(id, done) {
+    var called = false;
+    function finish(v) { if (!called) { called = true; done(v); } }
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", LOOKUP_URL + encodeURIComponent(id), true);
+      xhr.timeout = LOOKUP_MS;
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        var v = null;
+        if (xhr.status === 200) {
+          try {
+            var d = JSON.parse(xhr.responseText);
+            if (d && String(d.no) === id && (d.type === "kyushu" || d.type === "others" || d.type === null)) v = { type: d.type };
+          } catch (e) { v = null; }
+        }
+        finish(v);
+      };
+      xhr.ontimeout = function () { finish(null); };
+      xhr.onerror = function () { finish(null); };
+      xhr.send();
+    } catch (e) {
+      finish(null);
     }
-    // 一覧に無い番号：どちらの求人かを、見る人に選んでもらう
+  }
+
+  /** どちらにも無かったとき */
+  function showNotFound(id) {
+    choice.innerHTML = "";
+    // 「この番号の求人は」「見つかりませんでした」の区切りで折り返す（1文字だけ次の行に落ちないように）
+    var msg = el("p", "notfound-msg");
+    msg.appendChild(el("span", null, "この番号の求人は"));
+    msg.appendChild(el("span", null, "見つかりませんでした"));
+    choice.appendChild(msg);
+    choice.appendChild(el("p", "choice-help", "求人番号 " + id + " の掲載が終わったか、番号がちがうかもしれません。動画の番号をもう一度たしかめてね"));
+    var b = el("a", "btn btn-sub btn-home", "公式HPで求人を探す");
+    b.href = HOME_URL;
+    choice.appendChild(b);
+    choice.hidden = false;
+  }
+
+  /** 確かめられなかったとき：どちらの求人かを、見る人に選んでもらう */
+  function showChoice(id) {
     choice.innerHTML = "";
     choice.appendChild(el("p", "choice-q", "求人番号 " + id + " は、どちらの求人ですか？"));
     var types = ["kyushu", "others"];
@@ -147,6 +214,8 @@
   input.addEventListener("input", function () {
     if (!errorBox.hidden) clearError();
     choice.hidden = true;
+    opening.hidden = true;
+    lookupSeq++;
   });
 
   function renderJobs(jobs) {
@@ -166,13 +235,10 @@
       no.appendChild(el("small", null, "求人番号"));
       no.appendChild(document.createTextNode(r.id));
       var body = el("span", "job-body");
-      // 1行目：【都道府県】と、県外ワークの印
+      // 1行目：【都道府県】（九州・沖縄か県外かの印は出さない）
       var area = String(j.area || "");
       var pref = prefOf(area);
-      var tags = el("span", "job-tags");
-      if (pref) tags.appendChild(el("span", "job-pref", "【" + pref + "】"));   // 都道府県から書いてあるときだけ
-      if (type === "others") tags.appendChild(el("span", "job-type others", "県外ワーク"));
-      if (tags.childNodes.length) body.appendChild(tags);
+      if (pref) body.appendChild(el("span", "job-pref", "【" + pref + "】"));   // 都道府県から書いてあるときだけ
       body.appendChild(el("span", "job-company", String(j.company)));
       if (j.job) body.appendChild(el("span", "job-title", String(j.job)));
       if (area && area !== pref) body.appendChild(el("span", "job-area", area));
@@ -182,7 +248,7 @@
       a.appendChild(no);
       a.appendChild(body);
       a.appendChild(el("span", "job-go", "›"));
-      a.setAttribute("aria-label", "求人番号 " + r.id + " " + (type === "others" ? "県外ワーク " : "") + (pref ? pref + " " : "") + j.company + (j.job ? " " + j.job : ""));
+      a.setAttribute("aria-label", "求人番号 " + r.id + " " + (pref ? pref + " " : "") + j.company + (j.job ? " " + j.job : ""));
       li.appendChild(a);
       list.appendChild(li);
       shown++;

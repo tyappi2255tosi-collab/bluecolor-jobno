@@ -154,7 +154,10 @@ body {
 .choice-no { font-size: 24px; background: var(--white); color: var(--ink); border-radius: 999px; padding: 0 14px; }
 .choice-help { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
 
-/* 一覧の【都道府県】と県外ワークの印 */
-.job-tags { margin-bottom: 2px; }
+/* 一覧の【都道府県】 */
 .job-pref { font-size: 14px; font-weight: 900; color: var(--blue-dark); }
-.job-type.others { display: inline-block; margin-left: 4px; padding: 0 10px; border-radius: 999px; background: #F28C28; color: var(--white); font-size: 12px; font-weight: 900; vertical-align: 1px; }
+
+/* この番号の求人が見つからなかったとき */
+.notfound-msg { margin: 0 0 6px; font-size: 18px; font-weight: 900; color: var(--red); }
+.notfound-msg span { display: inline-block; }
+.btn-home { margin-top: 12px; }
