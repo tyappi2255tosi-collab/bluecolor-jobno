@@ -170,7 +170,7 @@
       var area = String(j.area || "");
       var pref = prefOf(area);
       var tags = el("span", "job-tags");
-      if (pref || area) tags.appendChild(el("span", "job-pref", "【" + (pref || area) + "】"));
+      if (pref) tags.appendChild(el("span", "job-pref", "【" + pref + "】"));   // 都道府県から書いてあるときだけ
       if (type === "others") tags.appendChild(el("span", "job-type others", "県外ワーク"));
       if (tags.childNodes.length) body.appendChild(tags);
       body.appendChild(el("span", "job-company", String(j.company)));
