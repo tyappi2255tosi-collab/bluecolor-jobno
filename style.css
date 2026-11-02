@@ -143,3 +143,18 @@ body {
   #jobNo { font-size: 28px; }
   .btn { font-size: 20px; }
 }
+
+/* どちらの求人かを選ぶボタン（一覧に無い番号のとき） */
+.choice { margin-top: 16px; text-align: center; }
+.choice-q { margin: 0 0 10px; font-size: 17px; font-weight: 900; color: var(--navy); }
+.btn-choice { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 12px; padding: 14px 20px; text-decoration: none; box-shadow: 0 5px 0 var(--ink); font-size: 18px; font-weight: 900; }
+.btn-choice:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.btn-choice.kyushu { background: var(--blue); color: var(--white); }
+.btn-choice.others { background: #F28C28; color: var(--white); }
+.choice-no { font-size: 24px; background: var(--white); color: var(--ink); border-radius: 999px; padding: 0 14px; }
+.choice-help { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+/* 一覧の【都道府県】と県外ワークの印 */
+.job-tags { margin-bottom: 2px; }
+.job-pref { font-size: 14px; font-weight: 900; color: var(--blue-dark); }
+.job-type.others { display: inline-block; margin-left: 4px; padding: 0 10px; border-radius: 999px; background: #F28C28; color: var(--white); font-size: 12px; font-weight: 900; vertical-align: 1px; }
