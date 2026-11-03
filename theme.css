@@ -1,0 +1,39 @@
+/* このファイルは自動で作ったもの（直接直さない）。元は netlify-app/src/render/findTheme.json。
+   動画の最後の場面の検索窓も同じ値で描く。直したら netlify-app で npm run find-theme */
+:root {
+  --blue:               #03A0DC;   /* ロゴの水色 */
+  --blue-dark:          #0279A8;
+  --blue-light:         #E4F6FD;
+  --ink:                #101828;   /* ロゴの黒いふち */
+  --navy:               #1B2A4A;
+  --yellow:             #FFD23F;
+  --red:                #D93B3B;
+  --red-light:          #FDECEC;
+  --white:              #FFFFFF;
+  --muted:              #5B6476;
+  --font:               "M PLUS Rounded 1c";
+  --radius:             18px;   /* カードの角の丸み */
+  --border:             3px;   /* カードの黒い枠の太さ */
+  --card-shadow:        6px;   /* カードの影（下にずらす） */
+  --card-pad:           18px 16px 20px;
+  --field-radius:       14px;
+  --field-border:       3px;
+  --field-pad-x:        12px;
+  --field-pad-y:        10px;
+  --no-size:            22px;   /* 「No.」の大きさ */
+  --no-gap:             6px;
+  --num-size:           34px;   /* 番号の大きさ */
+  --num-spacing:        0.06em;
+  --focus-ring:         4px;
+  --focus-color:        rgba(3, 160, 220, 0.25);
+  --btn-margin:         16px;
+  --btn-height:         60px;
+  --btn-border:         3px;
+  --btn-font:           22px;
+  --btn-icon:           26px;
+  --btn-gap:            8px;
+  --btn-shadow:         5px;   /* ボタンの影 */
+  --btn-press:          4px;   /* 押したときに沈む量 */
+  --btn-pressed-shadow: 1px;   /* 押したときの影 */
+  --btn-text-shadow:    0 2px 0 rgba(16, 24, 40, 0.35);
+}

@@ -1,17 +1,5 @@
 /* BLUE COLOR のロゴに合わせた色（水色・黒のふち・白）と、丸ゴシックの太字 */
-:root {
-  --blue: #03A0DC;       /* ロゴの水色 */
-  --blue-dark: #0279A8;
-  --blue-light: #E4F6FD;
-  --ink: #101828;        /* ロゴの黒いふち */
-  --navy: #1B2A4A;
-  --yellow: #FFD23F;
-  --red: #D93B3B;
-  --red-light: #FDECEC;
-  --white: #FFFFFF;
-  --muted: #5B6476;
-  --radius: 18px;
-}
+/* 色・枠の太さ・角の丸み・影などの値は theme.css（動画の最後の場面の検索窓と共通。netlify-app/src/render/findTheme.json から作る） */
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -23,7 +11,7 @@ body {
   min-height: 100vh;
   background: linear-gradient(180deg, var(--blue-light) 0%, #F6FBFE 45%, var(--white) 100%);
   color: var(--ink);
-  font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  font-family: var(--font), "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
   font-weight: 500;
   line-height: 1.6;
 }
@@ -45,28 +33,28 @@ body {
 /* 番号の入力 */
 .search {
   background: var(--white);
-  border: 3px solid var(--ink);
+  border: var(--border) solid var(--ink);
   border-radius: var(--radius);
-  box-shadow: 0 6px 0 var(--ink);
-  padding: 18px 16px 20px;
+  box-shadow: 0 var(--card-shadow) 0 var(--ink);
+  padding: var(--card-pad);
 }
 .row {
   display: flex; align-items: center;
-  border: 3px solid var(--blue);
-  border-radius: 14px;
+  border: var(--field-border) solid var(--blue);
+  border-radius: var(--field-radius);
   background: var(--white);
-  padding: 0 12px;
+  padding: 0 var(--field-pad-x);
   transition: border-color .15s, box-shadow .15s;
 }
-.row:focus-within { border-color: var(--blue-dark); box-shadow: 0 0 0 4px rgba(3, 160, 220, .25); }
+.row:focus-within { border-color: var(--blue-dark); box-shadow: 0 0 0 var(--focus-ring) var(--focus-color); }
 .row.bad { border-color: var(--red); box-shadow: 0 0 0 4px rgba(217, 59, 59, .18); }
-.no { font-size: 22px; font-weight: 900; color: var(--blue-dark); margin-right: 6px; }
+.no { font-size: var(--no-size); font-weight: 900; color: var(--blue-dark); margin-right: var(--no-gap); }
 #jobNo {
   flex: 1; min-width: 0;
   border: 0; outline: 0; background: transparent;
-  font: inherit; font-size: 34px; font-weight: 900; letter-spacing: .06em;
+  font: inherit; font-size: var(--num-size); font-weight: 900; letter-spacing: var(--num-spacing);
   color: var(--ink);
-  padding: 10px 0;
+  padding: var(--field-pad-y) 0;
 }
 #jobNo::placeholder { color: #B6C2D2; font-weight: 800; letter-spacing: 0; font-size: 26px; }
 .error {
@@ -80,28 +68,28 @@ body {
 
 /* ボタン */
 .btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; min-height: 60px;
-  border: 3px solid var(--ink); border-radius: 999px;
-  font: inherit; font-size: 22px; font-weight: 900; text-decoration: none;
+  display: flex; align-items: center; justify-content: center; gap: var(--btn-gap);
+  width: 100%; min-height: var(--btn-height);
+  border: var(--btn-border) solid var(--ink); border-radius: 999px;
+  font: inherit; font-size: var(--btn-font); font-weight: 900; text-decoration: none;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   transition: transform .08s, box-shadow .08s;
 }
 .btn-main {
-  margin-top: 16px;
+  margin-top: var(--btn-margin);
   background: var(--blue); color: var(--white);
-  box-shadow: 0 5px 0 var(--ink);
-  text-shadow: 0 2px 0 rgba(16, 24, 40, .35);
+  box-shadow: 0 var(--btn-shadow) 0 var(--ink);
+  text-shadow: var(--btn-text-shadow);
 }
-.btn-main:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.btn-main:active { transform: translateY(var(--btn-press)); box-shadow: 0 var(--btn-pressed-shadow) 0 var(--ink); }
 .btn-sub {
   margin-top: 26px;
   background: var(--white); color: var(--navy);
-  box-shadow: 0 5px 0 var(--ink); font-size: 19px;
+  box-shadow: 0 var(--btn-shadow) 0 var(--ink); font-size: 19px;
 }
 .btn-sub::after { content: "›"; font-size: 26px; line-height: 1; margin-left: 2px; }
-.btn-sub:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
-.ico { width: 26px; height: 26px; }
+.btn-sub:active { transform: translateY(var(--btn-press)); box-shadow: 0 var(--btn-pressed-shadow) 0 var(--ink); }
+.ico { width: var(--btn-icon); height: var(--btn-icon); }
 
 @media (max-width: 350px) {
   .lead { font-size: 22px; }
